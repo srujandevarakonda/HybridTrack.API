@@ -15,11 +15,11 @@ namespace HybridTrack.Api.Migrations
                 name: "BodyMeasurements",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    MeasuredAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    WeightKg = table.Column<decimal>(type: "numeric(8,2)", precision: 8, scale: 2, nullable: false),
-                    BodyFatPercentage = table.Column<decimal>(type: "numeric(5,2)", precision: 5, scale: 2, nullable: true),
-                    WaistCm = table.Column<decimal>(type: "numeric(8,2)", precision: 8, scale: 2, nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MeasuredAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    WeightKg = table.Column<decimal>(type: "decimal(8,2)", precision: 8, scale: 2, nullable: false),
+                    BodyFatPercentage = table.Column<decimal>(type: "decimal(5,2)", precision: 5, scale: 2, nullable: true),
+                    WaistCm = table.Column<decimal>(type: "decimal(8,2)", precision: 8, scale: 2, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -30,11 +30,11 @@ namespace HybridTrack.Api.Migrations
                 name: "RunActivities",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    StartedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    DistanceKm = table.Column<decimal>(type: "numeric(8,2)", precision: 8, scale: 2, nullable: false),
-                    Duration = table.Column<TimeSpan>(type: "interval", nullable: false),
-                    Notes = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StartedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    DistanceKm = table.Column<decimal>(type: "decimal(8,2)", precision: 8, scale: 2, nullable: false),
+                    Duration = table.Column<TimeSpan>(type: "time", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -45,10 +45,10 @@ namespace HybridTrack.Api.Migrations
                 name: "StrengthWorkouts",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    StartedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    Name = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: false),
-                    Notes = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StartedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -59,12 +59,12 @@ namespace HybridTrack.Api.Migrations
                 name: "StrengthSets",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    StrengthWorkoutId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ExerciseName = table.Column<string>(type: "character varying(120)", maxLength: 120, nullable: false),
-                    SetNumber = table.Column<int>(type: "integer", nullable: false),
-                    Repetitions = table.Column<int>(type: "integer", nullable: false),
-                    WeightKg = table.Column<decimal>(type: "numeric(8,2)", precision: 8, scale: 2, nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    StrengthWorkoutId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ExerciseName = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
+                    SetNumber = table.Column<int>(type: "int", nullable: false),
+                    Repetitions = table.Column<int>(type: "int", nullable: false),
+                    WeightKg = table.Column<decimal>(type: "decimal(8,2)", precision: 8, scale: 2, nullable: false)
                 },
                 constraints: table =>
                 {

@@ -6,32 +6,37 @@ HybridTrack is a training log for strength workouts, running activities, body me
 
 - .NET SDK 9.0 or later (the current project targets `net9.0` because that is the SDK installed locally)
 - Node.js and npm
-- Docker Desktop with Docker Compose
+- SQL Server or SQL Server Express available locally
 - Visual Studio for the backend and VS Code for the React frontend
-
-Docker was not available on the initial machine inspection, so install Docker Desktop before starting PostgreSQL.
 
 ## Architecture
 
-- `backend/HybridTrack.Api`: controller-based ASP.NET Core Web API, EF Core, PostgreSQL provider, Swagger UI, and development CORS.
+- `backend/HybridTrack.Api`: controller-based ASP.NET Core Web API, EF Core, SQL Server provider, Swagger UI, and development CORS.
 - `frontend/hybridtrack-web`: React and TypeScript Vite application using TanStack Query and Tailwind CSS.
 - `tests/HybridTrack.Api.Tests`: xUnit integration tests using `WebApplicationFactory`.
-- `docker-compose.yml`: local PostgreSQL 16 container with a named data volume.
+- `docker-compose.yml`: no database service is required for the local SQL Server setup.
 
 The API uses a single `ApplicationDbContext` and direct domain entities. This keeps the foundation easy to follow and leaves room to add application services when real workflows need them.
 
 ## Local setup
 
-1. Copy `.env.example` to `.env` at the repository root. The committed example values are suitable for local development only.
-2. Start PostgreSQL:
+1. Install and start SQL Server locally.
+2. Configure the development connection string in `backend/HybridTrack.Api/appsettings.Development.json`:
 
-   ```powershell
-   docker compose up -d
+   ```json
+   {
+     "ConnectionStrings": {
+       "DefaultConnection": "Server=[MY SQL SERVER NAME];Database=HybridTrackDb;Trusted_Connection=True;TrustServerCertificate=True"
+     }
+   }
    ```
 
-3. Apply the database migration:
+   Replace `[MY SQL SERVER NAME]` with your local SQL Server instance name. This uses Windows authentication and does not require committing usernames or passwords.
+
+3. Restore packages and apply the database migration:
 
    ```powershell
+   dotnet restore
    dotnet ef database update --project backend/HybridTrack.Api --startup-project backend/HybridTrack.Api
    ```
 
