@@ -1,4 +1,5 @@
 using HybridTrack.Api.Data;
+using HybridTrack.Api.Middleware;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,10 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+// Catches unhandled exceptions from everything below it in the pipeline,
+// so it needs to be registered first.
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
