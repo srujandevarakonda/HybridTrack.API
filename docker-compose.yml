@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: hybridtrack-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-hybridtrack}
+      POSTGRES_USER: ${POSTGRES_USER:-hybridtrack}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hybridtrack}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - hybridtrack-postgres-data:/var/lib/postgresql/data
+
+volumes:
+  hybridtrack-postgres-data:

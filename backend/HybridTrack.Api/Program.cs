@@ -1,3 +1,6 @@
+using HybridTrack.Api.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -24,8 +27,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     app.UseCors("DevelopmentFrontend");
 }
-
-app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
