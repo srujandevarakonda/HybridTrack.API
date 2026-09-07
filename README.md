@@ -4,69 +4,83 @@ HybridTrack is a training log for strength workouts, running activities, body me
 
 ## Prerequisites
 
-- .NET SDK 9.0 or later (the current project targets `net9.0` because that is the SDK installed locally)
-- Node.js and npm
-- SQL Server or SQL Server Express available locally
-- Visual Studio for the backend and VS Code for the React frontend
+* .NET SDK 9.0
+* Node.js and npm
+* SQL Server or SQL Server Express
+* Visual Studio for the backend
+* VS Code for the React frontend
 
 ## Architecture
 
-- `backend/HybridTrack.Api`: controller-based ASP.NET Core Web API, EF Core, SQL Server provider, Swagger UI, and development CORS.
-- `frontend/hybridtrack-web`: React and TypeScript Vite application using TanStack Query and Tailwind CSS.
-- `tests/HybridTrack.Api.Tests`: xUnit integration tests using `WebApplicationFactory`.
-- `docker-compose.yml`: no database service is required for the local SQL Server setup.
+* `backend/HybridTrack.Api` — ASP.NET Core Web API, Entity Framework Core, SQL Server and Swagger
+* `frontend/hybridtrack-web` — React, TypeScript, Vite, TanStack Query and Tailwind CSS
+* `tests/HybridTrack.Api.Tests` — xUnit integration tests using `WebApplicationFactory`
 
-The API uses a single `ApplicationDbContext` and direct domain entities. This keeps the foundation easy to follow and leaves room to add application services when real workflows need them.
+The API uses `ApplicationDbContext` for database access. Feature-specific services and interfaces will be added as application workflows are implemented.
 
-## Local setup
+## Local Setup
 
-1. Install and start SQL Server locally.
-2. Configure the development connection string in `backend/HybridTrack.Api/appsettings.Development.json`:
+### 1. Configure SQL Server
 
-   ```json
-   {
-     "ConnectionStrings": {
-       "DefaultConnection": "Server=[MY SQL SERVER NAME];Database=HybridTrackDb;Trusted_Connection=True;TrustServerCertificate=True"
-     }
-   }
-   ```
+Start your local SQL Server or SQL Server Express instance.
 
-   Replace `[MY SQL SERVER NAME]` with your local SQL Server instance name. This uses Windows authentication and does not require committing usernames or passwords.
+Initialize .NET User Secrets:
 
-3. Restore packages and apply the database migration:
+```powershell
+dotnet user-secrets init --project backend/HybridTrack.Api/HybridTrack.Api.csproj
+```
 
-   ```powershell
-   dotnet restore
-   dotnet ef database update --project backend/HybridTrack.Api --startup-project backend/HybridTrack.Api
-   ```
+Store the local connection string outside the Git repository:
 
-4. Start the API from Visual Studio or with:
+```powershell
+dotnet user-secrets set "ConnectionStrings:DefaultConnection" "Server=.\SQLEXPRESS;Database=HybridTrackDb;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True;" --project backend/HybridTrack.Api/HybridTrack.Api.csproj
+```
 
-   ```powershell
-   dotnet run --project backend/HybridTrack.Api
-   ```
+Change the server name if your SQL Server instance uses a different name.
 
-   Swagger is available at `https://localhost:7272/swagger` and the HTTP health endpoint is `http://localhost:5037/api/health`.
+### 2. Restore Packages and Apply Migrations
 
-5. In a second terminal, copy `frontend/hybridtrack-web/.env.example` to `frontend/hybridtrack-web/.env`, then start React from VS Code:
+```powershell
+dotnet restore
+dotnet ef database update --project backend/HybridTrack.Api --startup-project backend/HybridTrack.Api
+```
 
-   ```powershell
-   cd frontend/hybridtrack-web
-   npm install
-   npm run dev
-   ```
+### 3. Start the API
 
-The frontend runs at `http://localhost:5173` and displays the API connection state.
+Start the API from Visual Studio or run:
 
-## Migrations
+```powershell
+dotnet run --project backend/HybridTrack.Api
+```
 
-Create a new migration after changing the domain model:
+The local endpoints are:
+
+* Swagger UI: `https://localhost:7272/swagger`
+* Health endpoint: `http://localhost:5037/api/health`
+
+The exact ports may vary depending on the active Visual Studio launch profile.
+
+### 4. Start the Frontend
+
+Create `.env` from `frontend/hybridtrack-web/.env.example`, then run:
+
+```powershell
+cd frontend/hybridtrack-web
+npm install
+npm run dev
+```
+
+The frontend runs at `http://localhost:5173` and displays the API connection status.
+
+## Database Migrations
+
+Create a migration after changing the domain model:
 
 ```powershell
 dotnet ef migrations add MigrationName --project backend/HybridTrack.Api --startup-project backend/HybridTrack.Api --output-dir Migrations
 ```
 
-Apply migrations:
+Apply pending migrations:
 
 ```powershell
 dotnet ef database update --project backend/HybridTrack.Api --startup-project backend/HybridTrack.Api
@@ -74,9 +88,16 @@ dotnet ef database update --project backend/HybridTrack.Api --startup-project ba
 
 ## Verification
 
+Build and test the backend:
+
 ```powershell
 dotnet build backend/HybridTrack.Api
 dotnet test tests/HybridTrack.Api.Tests
+```
+
+Build the frontend:
+
+```powershell
 cd frontend/hybridtrack-web
 npm run build
 ```
